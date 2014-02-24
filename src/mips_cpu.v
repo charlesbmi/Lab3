@@ -71,7 +71,7 @@ module mips_cpu (
         .instr              (instr_id),
         .rs_data_in         (rs_data_id),
         .rt_data_in         (rt_data_id),
-        .forwarded_data_mem(mem_out),
+        .forwarded_data_mem(reg_write_data_mem),
         .forwarded_reg_addr_mem(reg_write_addr_mem),
         .forwarded_data_alu(alu_result_ex),
         .forwarded_reg_addr_alu(reg_write_addr_ex),

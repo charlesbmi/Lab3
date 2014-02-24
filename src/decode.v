@@ -211,8 +211,8 @@ module decode (
 // Forwarding Control
 //******************************************************************************
 
-assign alu_op_x_temp = ((forwarded_reg_addr_mem === rs_addr) && |rs_addr && mem_read)? forwarded_data_mem: rs_data;
-assign alu_op_y_temp = ((forwarded_reg_addr_mem === rt_addr) && |rt_addr && mem_read)? forwarded_data_mem: rt_data;
+assign alu_op_x_temp = ((forwarded_reg_addr_mem === rs_addr) && |rs_addr)? forwarded_data_mem: rs_data;
+assign alu_op_y_temp = ((forwarded_reg_addr_mem === rt_addr) && |rt_addr)? forwarded_data_mem: rt_data;
 
 assign alu_op_x_initial = ((forwarded_reg_addr_alu === rs_addr) && |rs_addr)? forwarded_data_alu: alu_op_x_temp;
 assign alu_op_y_initial = ((forwarded_reg_addr_alu === rt_addr) && |rt_addr)?forwarded_data_alu: alu_op_y_temp;
