@@ -3,7 +3,7 @@ File: mips_to_irom.py
 Author: Charles Guan
 Last Edit: 2014-02-22
 ---------------------
-This module converts MIPS assembly code (*.s) into Verilog IROM format (*.v).
+This module compiles basic MIPS assembly code (*.s) into Verilog IROM format (*.v).
 
 Input:
     MIPS assembly code
@@ -33,29 +33,27 @@ FOOTER = [
 '',
 'endmodule',
 ]
-
 def main():
     mips_file = raw_input('Path to MIPS input file: ')
     irom_file = raw_input('Path to IROM output file: ')
     instr_num = 0
     with open (irom_file, 'wb') as wf:
-        wf.writelines(HEADER)
-        
+        wf.writelines("%s\n" % line for line in HEADER)
         with open (mips_file, 'rb') as rf:
             for instr in rf.readlines():
                 # Write nothing for whitespace or comment lines
                 if not (instr.isspace() or instr[0] == '#'):  
                     wf.write(mips2irom(instr, instr_num))
                     instr_num += 1
-                 
-                 
-                 
-        
+            for row in range (instr_num, 512):
+                wf.write("    assign memory[%d]={`NOP};\n" % row)
+        wf.writelines("%s\n" % line for line in FOOTER)
 
-        wf.writelines(FOOTER)
-
-# It might be a good idea to think of both as CSV files and read them as such.
-#TODO: formatting should all og in one function. pre-parse
+def mips2irom(instr, instr_num):
+    """Passes instruction on to proper function based on format"""
+    # Format instruction slightly
+    instrf = instr.upper().replace(',', ' ').replace('$','`')
+    return INSTR2FORMAT.get(instrf.split()[0],label_format)(instrf, instr_num)
 
 # Translates a memory access (lw or sw) to Verilog
 def mem_format(instr, instr_num):
@@ -75,10 +73,9 @@ def mem_format(instr, instr_num):
         translated below:
         assign memory[6]={`SW,`SP,`S0,16'd24};
     """
-    formatted_instr = instr.upper().replace(',', '').replace('$','`')
-    mem_type, rt, offset_rs = formatted_instr.split()
+    mem_type, rt, offset_rs = instr.split()
     sign, offset = split_sign(offset_rs.partition("(")[0])
-    verilog_instr = "    assign memory[%d]={%s,%s,%s,%s16'd%d};" % (instr_num, mem_type, offset_rs[-4:-1], rt, sign, offset_val)
+    verilog_instr = "    assign memory[%d]={%s,%s,%s,%s16'd%d};\n" % (instr_num, mem_type, offset_rs[-4:-1], rt, sign, offset)
     return verilog_instr
 
 def branch_format(instr, instr_num):
@@ -100,9 +97,8 @@ def branch_format(instr, instr_num):
         We must subtract the instr_num (24) and 1 because of relative addresses
         while branching
     """
-    formatted_instr = instr.upper().replace(',', '').replace('$','`')
-    branch_type, rs, rt, label = formatted_instr.split()
-    verilog_instr = "    assign memory[%d]={`%s,%s,%s,`%s-16'd%d};" % (instr_num,branch_type,rs,rt,label,instr_num+1)
+    branch_type, rs, rt, label = instr.split()
+    verilog_instr = "    assign memory[%d]={`%s,%s,%s,`%s-16'd%d};\n" % (instr_num,branch_type,rs,rt,label,instr_num+1)
     return verilog_instr
 
 def i_format(instr, instr_num):
@@ -122,10 +118,9 @@ def i_format(instr, instr_num):
         translated below:
         assign memory[13]={`ADDIU,`ZERO,`T0, -16'd10};
     """
-    formatted_instr = instr.upper().replace(',', '').replace('$','`')
-    i_type, rt, rs imm = formatted_instr.split()
+    i_type, rt, rs, imm = instr.split()
     sign, imm = split_sign(imm)
-    verilog_instr = "    assign memory[%d]={`%s,%s,%s,%s16'd%d};" % (instr_num,i_type,rs,rt,sign,imm)
+    verilog_instr = "    assign memory[%d]={`%s,%s,%s,%s16'd%d};\n" % (instr_num,i_type,rs,rt,sign,imm)
     return verilog_instr
 
 def shift_format(instr, instr_num):
@@ -145,8 +140,7 @@ def shift_format(instr, instr_num):
         translated below:
         assign memory[507]={`SPECIAL,`NULL,`S0,`T0,5'd1,`SRL};
     """
-    formatted_instr = instr.upper().replace(',', '').replace('$','`')
-    shift_type, rd, rt, shamt = formatted_instr.split()
+    shift_type, rd, rt, shamt = instr.split()
     verilog_instr = "    assign memory[%d]={`SPECIAL,`NULL,%s,%s,5'd%s,`%s};\n" % (instr_num,rt,rd,shamt,shift_type)
     return verilog_instr
 
@@ -168,8 +162,7 @@ def r_format(instr, instr_num):
         translated below:
         assign memory[  7] = {`SPECIAL,`S0,`ZERO,`A0,5'd0,`ADD};
     """
-    formatted_instr = instr.upper().replace(',', '').replace('$','`')
-    r_type, rd, rs, rt = formatted_instr.split()
+    r_type, rd, rs, rt = instr.split()
     verilog_instr = "    assign memory[%d]={`SPECIAL,%s,%s,%s,`NULL,`%s};\n" % (instr_num,rs,rt,rd,r_type)
     return verilog_instr
 
@@ -193,7 +186,7 @@ def j_format(instr, instr_num):
     verilog_instr = "    assign memory[%d]={`%s,`%s};\n" % (instr_num,jump_type.upper(),label)
     return verilog_instr
 
-def label(instr, instr_num):
+def label_format(instr, instr_num):
     """Returns a NOP instruction with an associated define statement for label
     
     Translates an assembly language label into Verilog IROM no operation with
@@ -211,7 +204,7 @@ def label(instr, instr_num):
         `define WRITE_BYTE 481
     """
     verilog_instr = "    assign memory[%d]={`NOP};\n" % instr_num
-    verilog_instr += "`define %s %d\n" % (instr[:-1].upper(), instr_num)
+    verilog_instr += "`define %s %d\n" % (instr.partition(":")[0], instr_num)
     return verilog_instr
 
 def split_sign(num):
@@ -221,6 +214,45 @@ def split_sign(num):
     else:
         sign = "+"
     return sign, abs(num_copy)
+
+INSTR2FORMAT = {
+'ADD' : r_format,
+'ADDU' : r_format,
+'ADDI' : i_format,
+'ADDIU' : i_format,
+'SUB' : r_format,
+'SUBU' : r_format,
+'SLT' : r_format,
+'SLTU' : r_format,
+'SLTI' : i_format,
+'SLTIU' : i_format,
+'AND' : r_format,
+'ANDI' : i_format,
+'OR' : r_format,
+'ORI' : i_format,
+'XOR' : r_format,
+'XORI' : i_format,
+'NOR' : r_format,
+'SRL' : shift_format,
+'SRA' : shift_format,
+'SLL' : shift_format,
+'SRLV' : shift_format,
+'SRAV' : shift_format,
+'SLLV' : shift_format,
+'LUI' : i_format, # Does not work for LUI
+'LW' : mem_format,
+'SW' : mem_format,
+'BEQ' : branch_format,
+'BNE' : branch_format,
+'BLTZ' : branch_format,
+'BLEZ' : branch_format,
+'BGTZ' : branch_format,
+'BGEZ' : branch_format,
+'J' : j_format,
+'JR' : j_format,
+'JAL' : j_format,
+'JALR' : j_format,
+}
 
 if __name__ == '__main__':
     main()
