@@ -30,7 +30,7 @@ module mips_testbench();
         rst = 0; play = 1;
         #10;
         play = 0;
-        #1000;
+        #2000;
         $stop;
     end
 

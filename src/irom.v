@@ -85,7 +85,7 @@ module irom (
     assign memory[44]={`NOP};
     assign memory[45]={`ADDIU,`SP,`SP,-16'd4};
     assign memory[46]={`SW,`SP,`RA,+16'd0};
-    assign memory[47]={`SPECIAL,`S0,`ZERO,`A0,`NULL,`ADD};
+    assign memory[47]={`SPECIAL,`S0,`ZERO,`A0,`NULL,`ADD}; // xxxx loaded here
     assign memory[48]={`SPECIAL,`S1,`ZERO,`A1,`NULL,`ADD};
     assign memory[49]={`LW,`SP,`A2,+16'd20};
     assign memory[50]={`JAL,`WRITE_SQUARE};
@@ -176,7 +176,7 @@ module irom (
     assign memory[135]={`BNE,`T0,`ZERO,`DRAW_PADDLE_LOOP-16'd136};
     assign memory[136]={`NOP};
     assign memory[137]={`LW,`SP,`RA,+16'd28};
-    assign memory[138]={`LW,`SP,`S0,+16'd24};
+    assign memory[138]={`LW,`SP,`S0,+16'd24}; // xxxx loaded here
     assign memory[139]={`ADDIU,`SP,`SP,+16'd32};
     assign memory[140]={`SPECIAL, `RA, `NULL, `NULL, `NULL, `JR}; // jr $ra{`JR,`RA};
     assign memory[141]={`NOP};
@@ -228,9 +228,9 @@ module irom (
     assign memory[187]={`SPECIAL,`NULL,`T8,`T8,5'd16,`SLL};
     assign memory[188]={`ADDIU,`T8,`T8,+16'h000c};
     assign memory[189]={`SPECIAL,`NULL,`A2,`T7,5'd16,`SLL};
-    assign memory[190]={`SPECIAL,`NULL,`A0,`T6,5'd8,`SLL};
-    assign memory[191]={`SPECIAL,`T7,`T6,`T7,`NULL,`ADD};
-    assign memory[192]={`SPECIAL,`T7,`A1,`T7,`NULL,`ADD};
+    assign memory[190]={`SPECIAL,`NULL,`A0,`T6,5'd8,`SLL}; // xxxx00 loaded here
+    assign memory[191]={`SPECIAL,`T7,`T6,`T7,`NULL,`ADD};  // xxxx loaded here
+    assign memory[192]={`SPECIAL,`T7,`A1,`T7,`NULL,`ADD};  // xxxx loaded here
     assign memory[193]={`SW,`T8,`T7,+16'd0};
     assign memory[194]={`SPECIAL, `RA, `NULL, `NULL, `NULL, `JR}; // jr $ra{`JR,`RA};
     assign memory[195]={`NOP};

@@ -175,14 +175,10 @@ module decode (
     assign rs_data = rs_data_in;
     assign rt_data = rt_data_in;
     
-    // TODO: Assert the stall signal when a hazard occurs that cannot be
-    // resolved by forwarding.
-    assign stall = 1'b0;
-
     // these signals will automatically be set to the forwarded versions
     // once you have implemented forwarding in general
-    assign jr_pc = rs_data;
-    assign mem_write_data = rt_data;
+    assign jr_pc = alu_op_x_initial;
+    assign mem_write_data = alu_op_y_initial;
 
 //******************************************************************************
 // Determine ALU inputs and register writeback address
@@ -190,7 +186,6 @@ module decode (
 
     // for shift operations, use either shamt field or lower 5 bits of rs
     // otherwise use rs
-ff
     wire [31:0] shift_amount = isShiftImm ? shamt : rs_data[4:0];
     assign alu_op_x = isShift ? shift_amount : alu_op_x_initial;
     		
