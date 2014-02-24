@@ -16,6 +16,7 @@ module decode (
     input [4:0] forwarded_reg_addr_alu,
     input [31:0] forwarded_data_alu,
     input [5:0] op_prev,
+    input memory_read,
 
     output wire [4:0] reg_write_addr,
     output wire jump_branch,
@@ -210,8 +211,8 @@ module decode (
 // Forwarding Control
 //******************************************************************************
 
-assign alu_op_x_temp = ((forwarded_reg_addr_mem === rs_addr) && |rs_addr)? forwarded_data_mem: rs_data;
-assign alu_op_y_temp = ((forwarded_reg_addr_mem === rt_addr) && |rt_addr)? forwarded_data_mem: rt_data;
+assign alu_op_x_temp = ((forwarded_reg_addr_mem === rs_addr) && |rs_addr && mem_read)? forwarded_data_mem: rs_data;
+assign alu_op_y_temp = ((forwarded_reg_addr_mem === rt_addr) && |rt_addr && mem_read)? forwarded_data_mem: rt_data;
 
 assign alu_op_x_initial = ((forwarded_reg_addr_alu === rs_addr) && |rs_addr)? forwarded_data_alu: alu_op_x_temp;
 assign alu_op_y_initial = ((forwarded_reg_addr_alu === rt_addr) && |rt_addr)?forwarded_data_alu: alu_op_y_temp;

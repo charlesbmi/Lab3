@@ -76,6 +76,7 @@ module mips_cpu (
         .forwarded_data_alu(alu_result_ex),
         .forwarded_reg_addr_alu(reg_write_addr_ex),
         .op_prev (op_prev),
+        .memory_read(en & mem_we_mem),
 
         .reg_write_addr     (reg_write_addr_id),
         .jump_branch        (jump_branch_id),
