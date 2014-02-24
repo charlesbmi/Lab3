@@ -38,10 +38,10 @@ module irom (
     wire [`INSTR_WIDTH-1:0] memory [`NUM_INSTR-1:0];
     assign dout = memory[addr];
 
-    assign memory[0]={`ADDIU,`ZERO,`SP,16'hfffc};
-    assign memory[1]={`ADDIU,`ZERO,`T0,+16'd39};
-    assign memory[2]={`SW,`SP,`T0,+16'd0};
-    assign memory[3]={`ADDIU,`ZERO,`T0,+16'd29};
+    assign memory[0]={`ADDIU,`ZERO,`SP,16'h0ffc};
+    assign memory[1]={`ADDIU,`ZERO,`T0,16'd39};
+    assign memory[2]={`SW,`SP,`T0,16'd0};
+    assign memory[3]={`ADDIU,`ZERO,`T0,16'd29};
     assign memory[4]={`SW,`SP,`T0,+16'd4};
     assign memory[5]={`ADDIU,`ZERO,`T0,+16'd0};
     assign memory[6]={`SW,`SP,`T0,+16'd8};
@@ -224,9 +224,9 @@ module irom (
     assign memory[183]={`SPECIAL, `RA, `NULL, `NULL, `NULL, `JR}; // jr $ra{`JR,`RA};
     assign memory[184]={`NOP};
     assign memory[185]={`NOP};
-    assign memory[186]={`ADDIU,`ZERO,`T8,+16'd4095};
+    assign memory[186]={`ADDIU,`ZERO,`T8,+16'hffff};
     assign memory[187]={`SPECIAL,`NULL,`T8,`T8,5'd16,`SLL};
-    assign memory[188]={`ADDIU,`T8,`T8,+16'd12};
+    assign memory[188]={`ADDIU,`T8,`T8,+16'h000c};
     assign memory[189]={`SPECIAL,`NULL,`A2,`T7,5'd16,`SLL};
     assign memory[190]={`SPECIAL,`NULL,`A0,`T6,5'd8,`SLL};
     assign memory[191]={`SPECIAL,`T7,`T6,`T7,`NULL,`ADD};

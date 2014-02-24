@@ -190,7 +190,7 @@ module decode (
 
     // for shift operations, use either shamt field or lower 5 bits of rs
     // otherwise use rs
-
+ff
     wire [31:0] shift_amount = isShiftImm ? shamt : rs_data[4:0];
     assign alu_op_x = isShift ? shift_amount : alu_op_x_initial;
     		
@@ -215,13 +215,13 @@ module decode (
 // Forwarding Control
 //******************************************************************************
 
-assign alu_op_x_temp = (forwarded_reg_addr_mem == rs_addr)? forwarded_data_mem: rs_data;
-assign alu_op_y_temp = (forwarded_reg_addr_mem == rt_addr)? forwarded_data_mem: rt_data;
+assign alu_op_x_temp = ((forwarded_reg_addr_mem === rs_addr) && |rs_addr)? forwarded_data_mem: rs_data;
+assign alu_op_y_temp = ((forwarded_reg_addr_mem === rt_addr) && |rt_addr)? forwarded_data_mem: rt_data;
 
-assign alu_op_x_initial = (forwarded_reg_addr_alu == rs_addr)? forwarded_data_alu: alu_op_x_temp;
-assign alu_op_y_initial = (forwarded_reg_addr_alu == rt_addr)?forwarded_data_alu: alu_op_y_temp;
+assign alu_op_x_initial = ((forwarded_reg_addr_alu === rs_addr) && |rs_addr)? forwarded_data_alu: alu_op_x_temp;
+assign alu_op_y_initial = ((forwarded_reg_addr_alu === rt_addr) && |rt_addr)?forwarded_data_alu: alu_op_y_temp;
 
-assign stall = ((op_prev == `LW) & ((forwarded_reg_addr_alu == rs_addr) | (forwarded_reg_addr_alu == rt_addr)))? 1'b1: 1'b0;
+assign stall = ((op_prev === `LW) & (|rs_addr) & ((forwarded_reg_addr_alu === rs_addr) | (forwarded_reg_addr_alu === rt_addr)))? 1'b1: 1'b0;
 
 //******************************************************************************
 // Branch resolution
