@@ -32,6 +32,12 @@ module mips_cpu (
     wire mem_we_id, mem_we_ex, mem_we_mem;
     wire mem_read_id, mem_read_ex, mem_read_mem;
     wire alu_overflow;
+    wire [4:0] forwarded_reg_addr_mem;
+    wire [31:0] forwarded_data_mem;
+    wire [4:0] forwarded_reg_addr_alu;
+    wire [31:0] forwarded_data_alu;
+    wire [5:0] op, op_prev;
+
     
     wire stall;
     wire en_if = ~stall & en;
@@ -65,6 +71,11 @@ module mips_cpu (
         .instr              (instr_id),
         .rs_data_in         (rs_data_id),
         .rt_data_in         (rt_data_id),
+        .forwarded_data_mem(mem_out),
+        .forwarded_reg_addr_mem(reg_write_addr_mem),
+        .forwarded_data_alu(alu_result_ex),
+        .forwarded_reg_addr_alu(reg_write_addr_ex),
+        .op_prev (op_prev),
 
         .reg_write_addr     (reg_write_addr_id),
         .jump_branch        (jump_branch_id),
@@ -80,8 +91,8 @@ module mips_cpu (
         .reg_we             (reg_we_id),
         .rs_addr            (rs_addr_id),
         .rt_addr            (rt_addr_id),
-        .stall              (stall)//, // TODO: Connect additional inputs to
-                                       // the decode module to enable
+        .stall              (stall), // TODO: Connect additional inputs to
+        .op_out             (op)       // the decode module to enable
                                        // forwarding and stalling.
                                        // The signals you need have already
                                        // been declared elsewhere in mips_cpu.
@@ -100,6 +111,7 @@ module mips_cpu (
     // needed for W stage
     dffarre #(5) reg_write_addr_id2ex (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(reg_write_addr_id), .q(reg_write_addr_ex));
     dffarre reg_we_id2ex (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(reg_we_id), .q(reg_we_ex));
+    dffarre #(6) op_id2ex (.clk(clk), .ar(rst), .r(rst_id), .en(en), .d(op), .q(op_prev));
 
     alu x_stage (
         .alu_opcode     (alu_opcode_ex),
@@ -115,6 +127,7 @@ module mips_cpu (
     dffare #(32) mem_write_data_ex2mem (.clk(clk), .r(rst), .en(en), .d(mem_write_data_ex), .q(mem_write_data_mem));
     dffare mem_read_ex2mem (.clk(clk), .r(rst), .en(en), .d(mem_read_ex), .q(mem_read_mem));
     dffare mem_we_ex2mem (.clk(clk), .r(rst), .en(en), .d(mem_we_ex), .q(mem_we_mem));
+
 
     // needed for W stage
     dffare #(5) reg_write_addr_ex2mem (.clk(clk), .r(rst), .en(en), .d(reg_write_addr_ex), .q(reg_write_addr_mem));
