@@ -46,7 +46,6 @@ module instruction_fetch (
     dffare #(32) pc_reg (.clk(clk), .r(rst), .en(en), .d(pc_next), .q(pc));
 
     irom instr_rom (
-        .clk    (memclk),
         .addr   (pc[10:2]),
         .dout   (instr)
     );

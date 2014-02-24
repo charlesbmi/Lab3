@@ -75,7 +75,7 @@ def mem_format(instr, instr_num):
     """
     mem_type, rt, offset_rs = instr.split()
     sign, offset = split_sign(offset_rs.partition("(")[0])
-    verilog_instr = "    assign memory[%d]={%s,%s,%s,%s16'd%d};\n" % (instr_num, mem_type, offset_rs[-4:-1], rt, sign, offset)
+    verilog_instr = "    assign memory[%d]={`%s,%s,%s,%s16'd%d};\n" % (instr_num, mem_type, offset_rs[-4:-1], rt, sign, offset)
     return verilog_instr
 
 def branch_format(instr, instr_num):
@@ -204,7 +204,7 @@ def label_format(instr, instr_num):
         `define WRITE_BYTE 481
     """
     verilog_instr = "    assign memory[%d]={`NOP};\n" % instr_num
-    verilog_instr += "`define %s %d\n" % (instr.partition(":")[0], instr_num)
+    verilog_instr += "`define %s 26'd%d\n" % (instr.partition(":")[0], instr_num)
     return verilog_instr
 
 def split_sign(num):
