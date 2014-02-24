@@ -38,7 +38,7 @@ module irom (
     wire [`INSTR_WIDTH-1:0] memory [`NUM_INSTR-1:0];
     assign dout = memory[addr];
 
-    assign memory[0]={`NOP};
+    assign memory[0]={`ADDIU,`ZERO,`SP,16'hfffc};
     assign memory[1]={`ADDIU,`ZERO,`T0,+16'd39};
     assign memory[2]={`SW,`SP,`T0,+16'd0};
     assign memory[3]={`ADDIU,`ZERO,`T0,+16'd29};
