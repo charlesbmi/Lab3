@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <report-views version="2.0" >
  <header>
-  <DateModified>2013-02-13T06:21:48</DateModified>
+  <DateModified>2014-02-24T17:17:05</DateModified>
   <ModuleName>mips_top</ModuleName>
-  <SummaryTimeStamp>2013-02-13T06:20:48</SummaryTimeStamp>
-  <SavedFilePath>/afs/ir.stanford.edu/class/ee108b/labs/lab3/synth/iseconfig/mips_top.xreport</SavedFilePath>
-  <ImplementationReportsDirectory>/afs/ir.stanford.edu/class/ee108b/labs/lab3/synth/</ImplementationReportsDirectory>
+  <SummaryTimeStamp>2014-02-24T14:18:01</SummaryTimeStamp>
+  <SavedFilePath>/afs/ir.stanford.edu/users/n/i/nipuna1/ee108b/Lab3/synth/iseconfig/mips_top.xreport</SavedFilePath>
+  <ImplementationReportsDirectory>/afs/ir.stanford.edu/users/n/i/nipuna1/ee108b/Lab3/synth/</ImplementationReportsDirectory>
   <DateInitialized>2013-01-29T20:35:19</DateInitialized>
   <EnableMessageFiltering>false</EnableMessageFiltering>
  </header>

@@ -1,34 +1,34 @@
 // Custom IROM with self-playing Pong
-`define DRAW_BALL 26'd44
-`define CLEAR_BALL 26'd56
-`define SET_POSITION 26'd68
-`define CHANGE_POSITION 26'd75
-`define CHANGE_X_DIRECTION 26'd83
-`define TEST_X_NEXT  26'd88
-`define HIT_PADDLE 26'd95
-`define FINISH_X 26'd97
-`define CHANGE_Y_DIRECTION 26'd100
-`define TEST_Y_NEXT 26'd105
-`define FINISH_Y 26'd109
-`define END_THE_GAME 26'd112
-`define DRAW_PADDLE 26'd119
-`define DRAW_PADDLE_LOOP 26'd128
-`define DRAW_PADDLE_FOR_COND 26'd133
-`define DRAW_PADDLE_EXIT 26'd136
-`define UPDATE_PADDLE 26'd142
-`define PADDLE_UPPER_BOUND 26'd150
-`define PADDLE_LOWER_BOUND 26'd153
-`define MOVE_UP_OR_DOWN 26'd158
-`define MOVE_DOWN 26'd161
-`define MOVE_UP 26'd171
-`define UPDATE_PADDLE_EXIT 26'd179
-`define WRITE_SQUARE 26'd185
-`define GAME_LOOP 26'd28
+`define DRAW_BALL 16'd44
+`define CLEAR_BALL 16'd56
+`define SET_POSITION 16'd68
+`define CHANGE_POSITION 16'd75
+`define CHANGE_X_DIRECTION 16'd83
+`define TEST_X_NEXT 16'd88
+`define HIT_PADDLE 16'd95
+`define FINISH_X 16'd97
+`define CHANGE_Y_DIRECTION 16'd100
+`define TEST_Y_NEXT 16'd105
+`define FINISH_Y 16'd109
+`define END_THE_GAME 16'd112
+`define DRAW_PADDLE 16'd119
+`define DRAW_PADDLE_LOOP 16'd128
+`define DRAW_PADDLE_FOR_COND 16'd133
+`define DRAW_PADDLE_EXIT 16'd136
+`define UPDATE_PADDLE 16'd142
+`define PADDLE_UPPER_BOUND 16'd150
+`define PADDLE_LOWER_BOUND 16'd153
+`define MOVE_UP_OR_DOWN 16'd158
+`define MOVE_DOWN 16'd161
+`define MOVE_UP 16'd171
+`define UPDATE_PADDLE_EXIT 16'd179
+`define WRITE_SQUARE 16'd185
+`define GAME_LOOP 16'd128
 `include "mips_defines.v"
-`define ADDR_WIDTH 26'd9
-`define INSTR_WIDTH 26'd32
-`define NUM_INSTR 26'd512
-`define MAIN 26'd0
+`define ADDR_WIDTH 16'd9
+`define INSTR_WIDTH 16'd32
+`define NUM_INSTR 16'd512
+`define MAIN 16'd0
 
 module irom (
     input [`ADDR_WIDTH-1:0] addr,
@@ -60,27 +60,27 @@ module irom (
     assign memory[19]={`ADDIU,`ZERO,`S4,+16'd1};
     assign memory[20]={`ADDIU,`ZERO,`S5,+16'd1};
     assign memory[21]={`ADDIU,`ZERO,`S6,+16'd1};
-    assign memory[22]={`ADDIU,`ZERO,`T1,+16'd5};
+    assign memory[22]={`ADDIU,`ZERO,`T1,+16'd100000};
     assign memory[23]={`ADDIU,`ZERO,`T2,+16'd1};
-    assign memory[24]={`JAL,`DRAW_PADDLE};
+    assign memory[24]={`JAL,{10'd0, `DRAW_PADDLE}};
     assign memory[25]={`NOP};
-    assign memory[26]={`JAL,`DRAW_BALL};
+    assign memory[26]={`JAL,{10'd0, `DRAW_BALL}};
     assign memory[27]={`NOP};
     assign memory[28]={`NOP};
-    assign memory[29]={`JAL,`DRAW_BALL};
+    assign memory[29]={`JAL,{10'd0, `DRAW_BALL}};
     assign memory[30]={`NOP};
     assign memory[31]={`LW,`SP,`A2,+16'd12};
     assign memory[32]={`ADDI,`S2,`S2,+16'd1};
     assign memory[33]={`SPECIAL,`S2,`T1,`T2,`NULL,`SLT};
     assign memory[34]={`BNE,`T2,`ZERO,`GAME_LOOP-16'd35};
     assign memory[35]={`NOP};
-    assign memory[36]={`JAL,`UPDATE_PADDLE};
+    assign memory[36]={`JAL,{10'd0, `UPDATE_PADDLE}};
     assign memory[37]={`NOP};
-    assign memory[38]={`JAL,`CLEAR_BALL};
+    assign memory[38]={`JAL,{10'd0, `CLEAR_BALL}};
     assign memory[39]={`NOP};
-    assign memory[40]={`JAL,`SET_POSITION};
+    assign memory[40]={`JAL,{10'd0, `SET_POSITION}};
     assign memory[41]={`NOP};
-    assign memory[42]={`J,`GAME_LOOP};
+    assign memory[42]={`J,{10'd0, `GAME_LOOP}};
     assign memory[43]={`NOP};
     assign memory[44]={`NOP};
     assign memory[45]={`ADDIU,`SP,`SP,-16'd4};
@@ -88,7 +88,7 @@ module irom (
     assign memory[47]={`SPECIAL,`S0,`ZERO,`A0,`NULL,`ADD}; // xxxx loaded here
     assign memory[48]={`SPECIAL,`S1,`ZERO,`A1,`NULL,`ADD};
     assign memory[49]={`LW,`SP,`A2,+16'd20};
-    assign memory[50]={`JAL,`WRITE_SQUARE};
+    assign memory[50]={`JAL,{10'd0, `WRITE_SQUARE}};
     assign memory[51]={`NOP};
     assign memory[52]={`LW,`SP,`RA,+16'd0};
     assign memory[53]={`ADDIU,`SP,`SP,+16'd4};
@@ -100,7 +100,7 @@ module irom (
     assign memory[59]={`SPECIAL,`S0,`ZERO,`A0,`NULL,`ADD};
     assign memory[60]={`SPECIAL,`S1,`ZERO,`A1,`NULL,`ADD};
     assign memory[61]={`SPECIAL,`ZERO,`ZERO,`A2,`NULL,`ADD};
-    assign memory[62]={`JAL,`WRITE_SQUARE};
+    assign memory[62]={`JAL,{10'd0, `WRITE_SQUARE}};
     assign memory[63]={`NOP};
     assign memory[64]={`LW,`SP,`RA,+16'd0};
     assign memory[65]={`ADDIU,`SP,`SP,+16'd4};
@@ -109,9 +109,9 @@ module irom (
     assign memory[68]={`NOP};
     assign memory[69]={`ADDIU,`SP,`SP,-16'd4};
     assign memory[70]={`SW,`SP,`RA,+16'd0};
-    assign memory[71]={`JAL,`CHANGE_X_DIRECTION};
+    assign memory[71]={`JAL,{10'd0, `CHANGE_X_DIRECTION}};
     assign memory[72]={`NOP};
-    assign memory[73]={`JAL,`CHANGE_Y_DIRECTION};
+    assign memory[73]={`JAL,{10'd0, `CHANGE_Y_DIRECTION}};
     assign memory[74]={`NOP};
     assign memory[75]={`NOP};
     assign memory[76]={`SPECIAL,`S0,`S5,`S0,`NULL,`ADD};
@@ -132,7 +132,7 @@ module irom (
     assign memory[91]={`NOP};
     assign memory[92]={`BNE,`S0,`ZERO,`FINISH_X-16'd93};
     assign memory[93]={`NOP};
-    assign memory[94]={`J,`END_THE_GAME};
+    assign memory[94]={`J,{10'd0, `END_THE_GAME}};
     assign memory[95]={`NOP};
     assign memory[96]={`ADDI,`ZERO,`S5,+16'd1};
     assign memory[97]={`NOP};
@@ -155,7 +155,7 @@ module irom (
     assign memory[114]={`NOP};
     assign memory[115]={`NOP};
     assign memory[116]={`ADDIU,`ZERO,`V0,+16'd10};
-    assign memory[117]={`J,`NUM_INSTR};
+    assign memory[117]={`J,{10'd0, `NUM_INSTR}};
     assign memory[118]={`NOP};
     assign memory[119]={`NOP};
     assign memory[120]={`ADDIU,`SP,`SP,-16'd32};
@@ -163,11 +163,11 @@ module irom (
     assign memory[122]={`SW,`SP,`S0,+16'd24};
     assign memory[123]={`LW,`SP,`S0,+16'd56};
     assign memory[124]={`SPECIAL,`ZERO,`ZERO,`A0,`NULL,`ADD};
-    assign memory[125]={`SPECIAL,`NULL,`S0,`T0,5'd1,`SRL};
+    assign memory[125]={`SPECIAL,`NULL,`S0,`T0, 5'd1,`SRL};
     assign memory[126]={`SPECIAL,`S1,`T0,`A1,`NULL,`ADD};
-    assign memory[127]={`J,`DRAW_PADDLE_FOR_COND};
+    assign memory[127]={`J,{10'd0, `DRAW_PADDLE_FOR_COND}};
     assign memory[128]={`NOP};
-    assign memory[129]={`JAL,`WRITE_SQUARE};
+    assign memory[129]={`JAL,{10'd0, `WRITE_SQUARE}};
     assign memory[130]={`NOP};
     assign memory[131]={`ADDI,`S0,`S0,-16'd1};
     assign memory[132]={`ADDI,`A1,`A1,-16'd1};
@@ -175,7 +175,7 @@ module irom (
     assign memory[134]={`SPECIAL,`ZERO,`S0,`T0,`NULL,`SLT};
     assign memory[135]={`BNE,`T0,`ZERO,`DRAW_PADDLE_LOOP-16'd136};
     assign memory[136]={`NOP};
-    assign memory[137]={`LW,`SP,`RA,+16'd28};
+    assign memory[137]={`LW,`SP,`RA,16'd28};
     assign memory[138]={`LW,`SP,`S0,+16'd24}; // xxxx loaded here
     assign memory[139]={`ADDIU,`SP,`SP,+16'd32};
     assign memory[140]={`SPECIAL, `RA, `NULL, `NULL, `NULL, `JR}; // jr $ra{`JR,`RA};
@@ -201,22 +201,22 @@ module irom (
     assign memory[160]={`BNE,`T0,`ZERO,`MOVE_UP-16'd161};
     assign memory[161]={`NOP};
     assign memory[162]={`ADDI,`ZERO,`A2,+16'd2};
-    assign memory[163]={`JAL,`WRITE_SQUARE};
+    assign memory[163]={`JAL,{10'd0, `WRITE_SQUARE}};
     assign memory[164]={`NOP};
     assign memory[165]={`SPECIAL,`NULL,`S0,`T0,5'd1,`SRL};
     assign memory[166]={`SPECIAL,`S1,`T0,`A1,`NULL,`SUB};
     assign memory[167]={`SPECIAL,`ZERO,`ZERO,`A2,`NULL,`ADD};
-    assign memory[168]={`JAL,`WRITE_SQUARE};
+    assign memory[168]={`JAL,{10'd0, `WRITE_SQUARE}};
     assign memory[169]={`NOP};
-    assign memory[170]={`J,`UPDATE_PADDLE_EXIT};
+    assign memory[170]={`J,{10'd0, `UPDATE_PADDLE_EXIT}};
     assign memory[171]={`NOP};
     assign memory[172]={`ADDI,`A1,`A1,+16'd1};
     assign memory[173]={`SPECIAL,`ZERO,`ZERO,`A2,`NULL,`ADD};
-    assign memory[174]={`JAL,`WRITE_SQUARE};
+    assign memory[174]={`JAL, {10'd0, `WRITE_SQUARE}};
     assign memory[175]={`NOP};
     assign memory[176]={`SPECIAL,`A1,`S0,`A1,`NULL,`SUB};
     assign memory[177]={`ADDI,`ZERO,`A2,+16'd2};
-    assign memory[178]={`JAL,`WRITE_SQUARE};
+    assign memory[178]={`JAL, {10'd0, `WRITE_SQUARE}};
     assign memory[179]={`NOP};
     assign memory[180]={`LW,`SP,`RA,+16'd28};
     assign memory[181]={`LW,`SP,`S0,+16'd24};

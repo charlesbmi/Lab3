@@ -170,9 +170,6 @@ module decode (
 // forwarding and stalling logic
 //******************************************************************************
 
-    // TODO: Set rs_data and rt_data so that forwarded data from the X and M
-    // stages can be used where appropriate. rs_data_in and rt_data_in are
-    // the values read from the register file
     assign rs_data = rs_data_in;
     assign rt_data = rt_data_in;
     
@@ -180,6 +177,16 @@ module decode (
     // once you have implemented forwarding in general
     assign jr_pc = alu_op_x_initial;
     assign mem_write_data = alu_op_y_initial;
+
+	assign alu_op_x_temp = ((forwarded_reg_addr_mem === rs_addr) && |rs_addr)?forwarded_data_mem: rs_data;
+
+	assign alu_op_y_temp = ((forwarded_reg_addr_mem === rt_addr) && |rt_addr)? forwarded_data_mem: rt_data;
+
+	assign alu_op_x_initial = ((forwarded_reg_addr_alu === rs_addr) && |rs_addr)? forwarded_data_alu: alu_op_x_temp;
+	assign alu_op_y_initial = ((forwarded_reg_addr_alu === rt_addr) && |rt_addr)?forwarded_data_alu: alu_op_y_temp;
+
+	assign stall = ((op_prev === `LW) & (|rs_addr) & ((forwarded_reg_addr_alu === rs_addr) | (forwarded_reg_addr_alu === rt_addr)))? 1'b1: 1'b0;
+
 
 //******************************************************************************
 // Determine ALU inputs and register writeback address
@@ -211,13 +218,6 @@ module decode (
 // Forwarding Control
 //******************************************************************************
 
-assign alu_op_x_temp = ((forwarded_reg_addr_mem === rs_addr) && |rs_addr)? forwarded_data_mem: rs_data;
-assign alu_op_y_temp = ((forwarded_reg_addr_mem === rt_addr) && |rt_addr)? forwarded_data_mem: rt_data;
-
-assign alu_op_x_initial = ((forwarded_reg_addr_alu === rs_addr) && |rs_addr)? forwarded_data_alu: alu_op_x_temp;
-assign alu_op_y_initial = ((forwarded_reg_addr_alu === rt_addr) && |rt_addr)?forwarded_data_alu: alu_op_y_temp;
-
-assign stall = ((op_prev === `LW) & (|rs_addr) & ((forwarded_reg_addr_alu === rs_addr) | (forwarded_reg_addr_alu === rt_addr)))? 1'b1: 1'b0;
 
 //******************************************************************************
 // Branch resolution

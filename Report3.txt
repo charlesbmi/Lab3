@@ -1,0 +1,26 @@
+EE 108B Processor Pipeline Design - LAB3
+
+Charles Guan
+Nipun Agarwala
+
+24th February, 2014
+
+INTRODUCTION:
+In the given project, we modified mipstop.v to add functionality to the instruction_fetch.v,alu.v and decode.v . The instruction_fetch.v module incremented the PC as the instruction needed. The decode.v module decodes the instruction passed in to it. It decides what kind of instruction it is and accordingly changes the appropriate signals connecting to the other modules. The alu.v module computes the results of the two operands according to the instruction passed into it. The irom.v contains the instructions to be executed.
+
+DESIGN:
+The decode.v module receives the instruction and decodes it. It dissembles the instruction into the opcode, operands, immediate, shamt and function code. Then, if the opcode is a branch instruction, the module assigns the appropriate wires with the correct values. if the opcode is a jump instruction, it updates the PC counter by the offset as specified in the instruction. Otherwise, using a big mux, as suggested by the always block, the module assigns the right alu instruction to the input to the ALU. According to the instruction, the decode.v module updates the memory write, memory read, register write and jump_with_link wires.
+
+The outputs of the decode.v module go to the instruction_fetch.v and alu.v modules. The instruction_fetch.v module updates the PC depending on whether the jump_en and/or branch_en is high. Otherwise it just increments the PC. The alu.v receives the operand values from decode.v and computes the result depending on the function sent from the latter. It outputs the result along with the overflow, if any.
+
+
+RESULTS:
+Drawing the initial stationary paddle and ball proved to be simple. These were implented by short write byte loops. However, to create motion, it is necessary to erase and track the ball and paddle while simultaneously re-drawing them. We stored the locations of both in global variables. For self-playing pong, the y-coordinates of each are matched, so this could be stored in a single variable.
+Other issues included coordinate bounding on the paddle when the ball was moving. Since the paddle could not be drawn off the screen that the ball moved upon, it was necessary to ensure that the paddle would stop moving at its edge even though the ball might move for a couple more squares. This required bounds-checking to fix.
+The initial design had issues with speed updating the paddle and ball, resulting in visibly flickering paddles and balls. This was caused by the implementation taking large amounts of time to refresh the new images of the ball and paddle. After reviewing the code, it was understood that performance could be enhanced by changing how the paddle was erase and re-written. Out of simplicity, the original implementation erased the entire paddle at each iteration, and then re-drew the entire paddle, which was time-consuming given that 6 paddle blocks and 1 ball block had to be re-drawn each time. To take advantage of the fact that the ball and paddle would only move once in any direction at any iteration, the final implementation draws only one block for the paddle's leading edge (as relative to the paddle motion) and erases only one block for the paddle's tail edge at each iteration. This speeds up the refresh time by about 3.5 times, as the time-consuming number of blocks to erase and redraw is cut down to two.
+
+CONCLUSIONS:
+The pong simulation, built on top of a Python graphics display, can move at a wide range of speeds without flickering. Furthermore, it will robustly play itself forever. The program was well-designed, drawing on the high-level functions that might be used in high-level language implementations. This mindset guided us to appropriate function decomposition that was tedious at first but led to simplified implementaiton later. Because functions in assembly require explicit stack allocation and register saving, we were more wary of unnecessary decomposition.
+The program was well-implemented, integrating the ball motion and the paddle motion well with shared variables on the stack. The implementation left room to make extensions flexible. For example, allowing users to control the paddle would simply require reading from the input and jumping to the move_up and move_down modules within the update_paddle function.
+Possible changes for next time could include storing global variables on the gp pointer or on the stack.
+
