@@ -24,3 +24,8 @@ The pong simulation, built on top of a Python graphics display, can move at a wi
 The program was well-implemented, integrating the ball motion and the paddle motion well with shared variables on the stack. The implementation left room to make extensions flexible. For example, allowing users to control the paddle would simply require reading from the input and jumping to the move_up and move_down modules within the update_paddle function.
 Possible changes for next time could include storing global variables on the gp pointer or on the stack.
 
+ADDITIONAL QUESTIONS:
+1. The Xilinx synthesis report states that our pipelined processor's maximum frequency is
+2. Major changes from Lab 1's assembly language implementation of Pong included: the number of delay cycles between updating the screen increased because hardware executes faster than simulation here. Additionally, drawing squares reqiured a simpler write to an address than was required in the simulation. Here, we could store a register word to memory. Lastly ,the SPIM simulator did not assume one-branch delay slot, so we added no-operation instructions after each jump and branch to ensure appropriate execution.
+3. The critical path is              .          might reduce the critical path.
+4. Using the current processor architecture, there is no way to avoid stalling dependent instructions following a load instruction. Load words do not produce new values until the memory stage, exactly when a following dependent instruction would require a read. Two poor solutions to this would be to merge the execute and memory access stages using all zero-offsets, so the ALU and memory units can be completely separate and paralellized.  
