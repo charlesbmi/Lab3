@@ -1,6 +1,6 @@
 iMPACT Version: Jun  8 2013 13:14:44
 
-iMPACT log file Started on Mon Feb 24 15:37:25 2014
+iMPACT log file Started on Mon Feb 24 19:15:49 2014
 
 Preference Table
 Name                 Setting             
@@ -95,7 +95,7 @@ Type = 0x0004.
 Maximum TCK operating frequency for this device chain: 10000000.
 Validating chain...
 Boundary-scan chain validated successfully.
-5: Device Temperature: Current Reading:   42.50 C, Min. Reading:   42.01 C, Max.Reading:   42.50 C
+5: Device Temperature: Current Reading:   42.99 C, Min. Reading:   42.50 C, Max.Reading:   43.48 C
 5: VCCINT Supply: Current Reading:   0.999 V, Min. Reading:   0.999 V, Max.Reading:   1.002 V
 5: VCCAUX Supply: Current Reading:   2.493 V, Min. Reading:   2.493 V, Max.Reading:   2.496 V
 '5': Programming device...

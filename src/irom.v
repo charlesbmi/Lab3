@@ -60,7 +60,7 @@ module irom (
     assign memory[19]={`ADDIU,`ZERO,`S4,+16'd1};
     assign memory[20]={`ADDIU,`ZERO,`S5,+16'd1};
     assign memory[21]={`ADDIU,`ZERO,`S6,+16'd1};
-    assign memory[22]={`ADDIU,`ZERO,`T1,+16'd100000};
+    assign memory[22]={`LUI,`ZERO,`T1,+16'd10000};
     assign memory[23]={`ADDIU,`ZERO,`T2,+16'd1};
     assign memory[24]={`JAL,{10'd0, `DRAW_PADDLE}};
     assign memory[25]={`NOP};
